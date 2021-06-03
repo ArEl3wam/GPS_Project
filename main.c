@@ -1,7 +1,7 @@
 #include "tm4c123gh6pm.h"
 #include "stdint.h"
 
-//signatures
+//Signatures
 void SSD_init(void);
 void LED_init(void);
 void dist_to_display(uint16_t dist);

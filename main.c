@@ -8,7 +8,6 @@ void SSD_init(void);
 void LED_init(void);
 void dist_to_display(uint16_t dist);
 
-<<<<<<< HEAD
 
 //LCD FUNCTIONS
 void lcd_command(uint8_t comm);
@@ -16,7 +15,8 @@ void lcd_data(uint8_t data);
 void delay(void);
 void lcd_display(uint16_t data,uint8_t pos);
 void lcd_init(void);
-=======
+
+//UART FUNCTIONS
 uint8_t latitude[20];
 uint8_t longitude[20];
 
@@ -47,8 +47,7 @@ UART5_FBRD_R=11;
 
 
 
-char UART5_Receiver(void)  
-{
+char UART5_Receiver(void){
     char data;
 	  while((UART5_FR_R&0x10)!=0){} //wait until Rx buffer is not full 
     data = UART5_DR_R ;  	//before giving it another byte 
@@ -56,12 +55,7 @@ char UART5_Receiver(void)
 }
 
 
-
-
-
-
-void GPS_Coordinates()
-{
+void GPS_Coordinates(){
 	uint8_t c;
 	uint8_t i = 0;
 	double temp;
@@ -136,7 +130,7 @@ void GPS_Coordinates()
 
 
 
->>>>>>> d0c8229a76f3b796a352858f5cd7611a58d4bf59
+
 
 void SystemInit(void){
 	LED_init();

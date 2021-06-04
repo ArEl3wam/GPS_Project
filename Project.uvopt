@@ -226,14 +226,10 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-<<<<<<< HEAD
       <TopLine>23</TopLine>
       <CurrentLine>42</CurrentLine>
-=======
       <TopLine>1</TopLine>
       <CurrentLine>137</CurrentLine>
-
->>>>>>> e15ab82b8c96f9cf754ef908e3c1047014fc766f
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>

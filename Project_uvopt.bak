@@ -213,6 +213,11 @@
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>23</TopLine>
       <CurrentLine>150</CurrentLine>
+      <TopLine>10</TopLine>
+      <CurrentLine>90</CurrentLine>
+
+      <TopLine>25</TopLine>
+      <CurrentLine>12</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>

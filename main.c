@@ -47,11 +47,11 @@ UART5_FBRD_R=11;
 
 
 
-char UART5_Receiver(void){
-    char data;
-	  while((UART5_FR_R&0x10)!=0){} //wait until Rx buffer is not full 
-    data = UART5_DR_R ;  	//before giving it another byte 
-    return (unsigned char) data; 
+
+uint8_t UART5_Receiver(void)  
+{
+	  while((UART5_FR_R&0x10)!=0){} //wait when data are available (RXFE is 0)
+    return ((uint8_t)(UART5_DR_R&0xFF)); 
 }
 
 

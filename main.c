@@ -153,6 +153,40 @@ int main (void)
 // 2nd SSD will take pins PB0 - PB6  			TENS
 // 3rd SSD will take pins PA2 - pA7,PD7  	ONES
 void SSD_init(void){
+SYSCTL_RCGCGPIO_R |= 0x1B;   // Enable port A,B,D,E;
+    while((SYSCTL_PRGPIO_R & 0x1B) == 0);
+
+    GPIO_PORTA_LOCK_R = 0x4C4F434B;
+    GPIO_PORTA_CR_R |= 0xFC;                    //UNCLOCKING PORT A PINS: 2-7
+
+    GPIO_PORTB_LOCK_R = 0x4C4F434B;
+    GPIO_PORTB_CR_R |= 0x7F;                    //UNCLOCKING PORT B PINS: 0-6
+
+    GPIO_PORTD_LOCK_R = 0x4C4F434B;
+    GPIO_PORTD_CR_R |= 0xFF;                    //UNCLOCKING PORT D PINS: 0-7
+
+    GPIO_PORTA_DIR_R |= 0xFC;
+    GPIO_PORTA_DEN_R |= 0xFC;
+    GPIO_PORTA_AMSEL_R &= ~0xFC;            //SET PINS 2-7 AS DIGITAL OUTPUT
+
+    GPIO_PORTB_DIR_R |= 0x7F;
+    GPIO_PORTB_DEN_R |= 0x7F;
+    GPIO_PORTB_AMSEL_R &= ~0x7F;            //SET PINS 2-7 AS DIGITAL OUTPUT
+
+    GPIO_PORTD_DIR_R |= 0xFF;
+    GPIO_PORTD_DEN_R |= 0xFF;
+    GPIO_PORTD_AMSEL_R &= ~0xFF;            //SET PINS 0-7 AS DIGITAL OUTPUT
+
+
+    GPIO_PORTA_AFSEL_R &= ~0xFC;
+    GPIO_PORTA_PCTL_R  &= ~0xFFFFFF00;
+
+    GPIO_PORTB_AFSEL_R &= ~0x7F;
+    GPIO_PORTB_PCTL_R   &= ~0x0FFFFFFF;
+
+    GPIO_PORTD_AFSEL_R &= ~0xFF;
+    GPIO_PORTD_PCTL_R  &= ~0xFFFFFFFF;
+
 }
 
 void LED_init(void){SYSCTL_RCGCGPIO_R |= 0x20;

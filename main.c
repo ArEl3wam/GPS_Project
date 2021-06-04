@@ -10,7 +10,11 @@ void dist_to_display(uint16_t dist);
 
 uint8_t latitude[20];
 uint8_t longitude[20];
-
+void Test_Distance_Calculations(double x , double y){
+	
+//empty//
+	
+}
 void UART_init(void){
 SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5
 SYSCTL_RCGCGPIO_R |=0x0010;   // activate port E

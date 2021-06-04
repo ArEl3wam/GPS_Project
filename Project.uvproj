@@ -141,7 +141,11 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
+<<<<<<< HEAD
             <UsePdscDebugDescription>0</UsePdscDebugDescription>
+=======
+            <UsePdscDebugDescription>1</UsePdscDebugDescription>
+>>>>>>> b4a5c8b (Edit in UART5 initialization)
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>3</TargetSelection>

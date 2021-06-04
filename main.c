@@ -240,31 +240,29 @@ void CalculateDistance(double newX,double newY ){
 void UART_init(void){
 SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5
 SYSCTL_RCGCGPIO_R |=0x0010;   // activate port E
- while ((SYSCTL_RCGCUART_R&0x0020)==0){};
- while ((SYSCTL_PRGPIO_R&0x0010)==0){};
+
 	 
-	 //UART5 initialization
+	 //UART5 configuration
 UART5_CTL_R =0;      //disable UART
 UART5_IBRD_R=104;
 // IBRD=int(1000000/9600)=int(104.16667)	 
 UART5_FBRD_R=11;
-//FBRD=round(0.16667*64)=11;
- UART5_LCRH_R |=	0x0070 ; //8-bit length ,enable FIFO
- UART5_CTL_R |=0x0201;  //enable RXE,URT
+//FBRD=round(0.16667*64)+0.5=11;
+ UART5_LCRH_R |=0x0070 ; //8-bit length ,enable FIFO,no parity bits,one stop
+ UART5_CTL_R |=0x0301;  //enable Tx,Rx,UART5
 	 
 //portE initailization
-	 GPIO_PORTE_DIR_R &= ~0x10;
-	 GPIO_PORTE_CR_R |= 0x10;        //unlock commit register
-	 GPIO_PORTE_AFSEL_R |= 0x10;    //use PE4 alternating function
-	 GPIO_PORTE_PCTL_R |= 0x10000;  // configure PE4 for UART
-	 GPIO_PORTE_DEN_R |= 0x10;      //set PE4 as digital
-	 GPIO_PORTE_AMSEL_R &= ~0x10;   //turn off analoge function
+	 GPIO_PORTE_CR_R |= 0x30;        //allow changes to PE5-4
+	 GPIO_PORTE_AFSEL_R |=0x30;    //enable alt funct on PE5-4
+	 GPIO_PORTE_PCTL_R = ((GPIO_PORTE_PCTL_R&0x00FFFF)+0x110000);  // configure PE5-4 for UART5
+	 GPIO_PORTE_DEN_R |= 0x30;      //set PE5-4 as digital
+	 GPIO_PORTE_AMSEL_R &= ~0x30;   //Disable analog on PE5-4
 	  
 }
 
 
 
-// UART initialization //
+// UART5 Receiver Function //
 uint8_t UART5_Receiver(void){
 	  while((UART5_FR_R&0x10)!=0){} //wait when data are available (RXFE is 0)
     return ((uint8_t)(UART5_DR_R&0xFF)); 

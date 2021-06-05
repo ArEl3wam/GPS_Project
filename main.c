@@ -1,7 +1,7 @@
 #include "tm4c123gh6pm.h"
 #include "stdint.h"
 #include <stdlib.h>
-
+#include <math.h>
 
 //Signatures
 void SSD_init(void);
@@ -16,9 +16,30 @@ void delay(void);
 void lcd_display(uint16_t data);
 void lcd_init(void);
 
-//UART FUNCTIONS
+/////////////Global Variables/////////////
+double distance=0;
+double oldX=0, oldY=0;
+double newX=0, newY=0;
 uint8_t latitude[20];
 uint8_t longitude[20];
+/////////////Global Variables/////////////
+
+void CalculateDistance(double newX,double newY ){
+	if(oldX == 0.0 || oldY == 0.0){
+				oldX=newX;
+        oldY=newY;
+	}
+	else{
+    double xsquare= (oldX-newX)*(oldX-newX);
+    double ysquare= (oldY-newY)*(oldY-newY);
+    double summing =  xsquare + ysquare;
+
+    distance+= sqrt(summing)* 100000;
+        oldX=newX;
+        oldY=newY;
+		}
+}
+
 
 void UART_init(void){
 SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5

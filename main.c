@@ -132,6 +132,20 @@ uint8_t decimal_to_BCD(uint8_t num){switch(num){
 }
 
 void dist_to_display(uint16_t dist){
+uint8_t hundreds = dist/100;
+    uint8_t tens=dist/10 - hundreds10 ;
+    uint8_t ones=dist-hundreds100 - tens*10;
+
+    uint8_t h = decimal_to_BCD(hundreds);
+    uint8_t t = decimal_to_BCD(tens);
+    uint8_t o = decimal_to_BCD(ones);
+
+    GPIO_PORTD_DATA_R |= h;
+    GPIO_PORTB_DATA_R |= t;
+
+    GPIO_PORTA_DATA_R |= (o<<2);  // a - f on A2 - A7
+    GPIO_PORTD_DATA_R |=((o&0x40)<<1); //set pin 7
+
 	
 }
 // delay functions // 

@@ -13,7 +13,7 @@ void dist_to_display(uint16_t dist);
 void lcd_command(uint8_t comm);
 void lcd_data(uint8_t data);
 void delay(void);
-void lcd_display(uint16_t data,uint8_t pos);
+void lcd_display(uint16_t data);
 void lcd_init(void);
 
 //UART FUNCTIONS
@@ -46,10 +46,7 @@ UART5_FBRD_R=11;
 }
 
 
-
-
-uint8_t UART5_Receiver(void)  
-{
+uint8_t UART5_Receiver(void){
 	  while((UART5_FR_R&0x10)!=0){} //wait when data are available (RXFE is 0)
     return ((uint8_t)(UART5_DR_R&0xFF)); 
 }
@@ -153,39 +150,39 @@ int main (void)
 // 2nd SSD will take pins PB0 - PB6  			TENS
 // 3rd SSD will take pins PA2 - pA7,PD7  	ONES
 void SSD_init(void){
-SYSCTL_RCGCGPIO_R |= 0x1B;   // Enable port A,B,D,E;
-    while((SYSCTL_PRGPIO_R & 0x1B) == 0);
+	SYSCTL_RCGCGPIO_R |= 0x1B;   // Enable port A,B,D,E;
+	while((SYSCTL_PRGPIO_R & 0x1B) == 0);
 
-    GPIO_PORTA_LOCK_R = 0x4C4F434B;
-    GPIO_PORTA_CR_R |= 0xFC;                    //UNCLOCKING PORT A PINS: 2-7
+	GPIO_PORTA_LOCK_R = 0x4C4F434B;
+	GPIO_PORTA_CR_R |= 0xFC;                    //UNCLOCKING PORT A PINS: 2-7
 
-    GPIO_PORTB_LOCK_R = 0x4C4F434B;
-    GPIO_PORTB_CR_R |= 0x7F;                    //UNCLOCKING PORT B PINS: 0-6
+	GPIO_PORTB_LOCK_R = 0x4C4F434B;
+	GPIO_PORTB_CR_R |= 0x7F;                    //UNCLOCKING PORT B PINS: 0-6
 
-    GPIO_PORTD_LOCK_R = 0x4C4F434B;
-    GPIO_PORTD_CR_R |= 0xFF;                    //UNCLOCKING PORT D PINS: 0-7
+	GPIO_PORTD_LOCK_R = 0x4C4F434B;
+	GPIO_PORTD_CR_R |= 0xFF;                    //UNCLOCKING PORT D PINS: 0-7
 
-    GPIO_PORTA_DIR_R |= 0xFC;
-    GPIO_PORTA_DEN_R |= 0xFC;
-    GPIO_PORTA_AMSEL_R &= ~0xFC;            //SET PINS 2-7 AS DIGITAL OUTPUT
+	GPIO_PORTA_DIR_R |= 0xFC;
+	GPIO_PORTA_DEN_R |= 0xFC;
+	GPIO_PORTA_AMSEL_R &= ~0xFC;            //SET PINS 2-7 AS DIGITAL OUTPUT
 
-    GPIO_PORTB_DIR_R |= 0x7F;
-    GPIO_PORTB_DEN_R |= 0x7F;
-    GPIO_PORTB_AMSEL_R &= ~0x7F;            //SET PINS 2-7 AS DIGITAL OUTPUT
+	GPIO_PORTB_DIR_R |= 0x7F;
+	GPIO_PORTB_DEN_R |= 0x7F;
+	GPIO_PORTB_AMSEL_R &= ~0x7F;            //SET PINS 2-7 AS DIGITAL OUTPUT
 
-    GPIO_PORTD_DIR_R |= 0xFF;
-    GPIO_PORTD_DEN_R |= 0xFF;
-    GPIO_PORTD_AMSEL_R &= ~0xFF;            //SET PINS 0-7 AS DIGITAL OUTPUT
+	GPIO_PORTD_DIR_R |= 0xFF;
+	GPIO_PORTD_DEN_R |= 0xFF;
+	GPIO_PORTD_AMSEL_R &= ~0xFF;            //SET PINS 0-7 AS DIGITAL OUTPUT
 
 
-    GPIO_PORTA_AFSEL_R &= ~0xFC;
-    GPIO_PORTA_PCTL_R  &= ~0xFFFFFF00;
+	GPIO_PORTA_AFSEL_R &= ~0xFC;
+	GPIO_PORTA_PCTL_R  &= ~0xFFFFFF00;
 
-    GPIO_PORTB_AFSEL_R &= ~0x7F;
-    GPIO_PORTB_PCTL_R   &= ~0x0FFFFFFF;
+	GPIO_PORTB_AFSEL_R &= ~0x7F;
+	GPIO_PORTB_PCTL_R   &= ~0x0FFFFFFF;
 
-    GPIO_PORTD_AFSEL_R &= ~0xFF;
-    GPIO_PORTD_PCTL_R  &= ~0xFFFFFFFF;
+	GPIO_PORTD_AFSEL_R &= ~0xFF;
+	GPIO_PORTD_PCTL_R  &= ~0xFFFFFFFF;
 
 }
 
@@ -233,11 +230,6 @@ void dist_to_display(uint16_t dist){
 	
 }
 
-// LEDs function
-void turn_LED_100(uint16_t dist){
-
-}
-
 void delay_milli(int n){
 int i,j;
 for(i=0;i<n;i++){
@@ -252,63 +244,72 @@ for(i=0;i<n;i++){
 for(j=0;j<3;j++)
 {}
 }
+}
 //LCD functions
-void lcd_command(uint8_t comm){
-	
-	GPIO_PORTE_DATA_R &= ~0x03; // RS,R/W => 0  TO SELECT COMMAND AND WRITE
-	GPIO_PORTD_DATA_R  = comm;  // put command in the data
-	GPIO_PORTE_DATA_R |= 0x04;  // Enable is set 
-	delay();
-	GPIO_PORTE_DATA_R &= ~0x04;	
+void lcd_command(unsigned char command){
+	GPIO_PORTE_DATA_R &= ~0x0E; // RS,R/W => 0  TO SELECT COMMAND AND WRITE
+	GPIO_PORTB_DATA_R  = command;  // put command in the data
+	GPIO_PORTE_DATA_R |= 0x08;  // Enable is set
+	delay_micro(0);
+	GPIO_PORTE_DATA_R &= ~0x0E;
+	if (command < 4){
+		delay_milli(2); // command 1 and 2 needs up to 1.64ms //
+	}		
+	else{
+		delay_micro(40); /* all others 40 us */	
+	}
 }
-void lcd_data(uint8_t data){
+void lcd_data(unsigned char data){
 	
-	GPIO_PORTE_DATA_R |= 0x01; 	// RS => 1  TO SELECT Data 
-	GPIO_PORTE_DATA_R &= ~0x02; // R/w => 0 TO SELECT WRITE
-	
-	GPIO_PORTD_DATA_R  = data;  // put command in the data
-	GPIO_PORTE_DATA_R |= 0x04;  // ENABLE IS SET TO 1
-	delay();
-	GPIO_PORTE_DATA_R &= ~0x04;	// ENABLE IS SET TO 0
+	GPIO_PORTE_DATA_R |= 0x02;  // RS => 1  TO SELECT Data
+	GPIO_PORTB_DATA_R  = data;  // put command in the data
+	GPIO_PORTE_DATA_R |= 0x08;  // ENABLE IS SET TO 1
+	delay_micro(40);
+	GPIO_PORTE_DATA_R &= ~0x0E; // ENABLE IS SET TO 0
 }
-void lcd_display(uint16_t data,uint8_t pos){
+void lcd_display(uint16_t data){
 	uint8_t hundreds = data/100;
 	uint8_t tens=data/10 - hundreds*10 ;
 	uint8_t ones=data-hundreds*100 - tens*10;
-	lcd_command(pos); 
-	delay();
-	lcd_data(hundreds);
-	delay();
-	lcd_data(tens);
-	delay();
-	lcd_data(ones);
-	delay();
+	lcd_data(hundreds +'0');
+	lcd_data(tens +'0');
+	lcd_data(ones +'0');
 }
 void lcd_init(void){
-	SYSCTL_RCGCGPIO_R |= 0x18; // Enable clock for PORTD and PORTE
-	while((SYSCTL_PRGPIO_R & 0x18) == 0) ;
-	
-	GPIO_PORTD_LOCK_R = 0x4C4F434B;
-	GPIO_PORTE_LOCK_R = 0x4C4F434B;
-	GPIO_PORTD_CR_R |= 0xFF;			// Unlocking PORTD PIN 1...8; 
-	GPIO_PORTE_CR_R |= 0x07;			// Unlocking PORTE PIN 0 1 2;
-	
-	GPIO_PORTD_DEN_R  |= 0xFF; 
-	GPIO_PORTD_AMSEL_R &= ~0xFF;	
-	GPIO_PORTE_DEN_R  |= 0x07;    
-	GPIO_PORTE_AMSEL_R &= ~0x07;	
-	
-	GPIO_PORTD_DIR_R  |= 0xFF;   // Configure PORTF Pin 1~8 digital output pins
-	GPIO_PORTE_DIR_R  &= ~0x07;  // Configure PORTF Pin 0, 1 and 2 digital input pins
+		SYSCTL_RCGCGPIO_R |= 0x12; // Enable clock for PORTB and PORTE
+    while((SYSCTL_PRGPIO_R & 0x12) == 0){} ;
 
-	
-	GPIO_PORTD_AFSEL_R  = 0x00;
-	GPIO_PORTE_AFSEL_R &= ~0x07;
-	GPIO_PORTD_PCTL_R   = 0x00000000;
-	GPIO_PORTE_PCTL_R  &= ~0x00000FFF;
-	 
-	lcd_command(0x30); //wake up 
-	lcd_command(0x38); //8bit data
-	lcd_command(0x01); //clear display
-	lcd_command(0x0F); //display on cursor blinking
+    //GPIO_PORTB_LOCK_R = 0x4C4F434B;
+    GPIO_PORTE_LOCK_R = 0x4C4F434B;
+    GPIO_PORTB_CR_R |= 0xFF;            // Unlocking PORTB PIN 1...8;
+    GPIO_PORTE_CR_R |= 0x0E;            // Unlocking PORTE PIN 1 2 3;
+
+    GPIO_PORTB_DEN_R  |= 0xFF;
+    GPIO_PORTB_AMSEL_R &= ~0xFF;
+    GPIO_PORTE_DEN_R  |= 0x0E;
+    GPIO_PORTE_AMSEL_R &= ~0x0E;
+
+    GPIO_PORTB_DIR_R  |= 0xFF;   // Configure PORTB Pin 1~8 digital output pins
+    GPIO_PORTE_DIR_R  |= 0x0E;  // Configure PORTF Pin 1, 2 and 3 digital input pins
+
+
+    GPIO_PORTB_AFSEL_R  = 0x00;
+    GPIO_PORTE_AFSEL_R &= ~0x0E;
+    GPIO_PORTB_PCTL_R   = 0x00000000;
+    GPIO_PORTE_PCTL_R  &= ~0x0000FFF0;
+			
+		delay_milli(20); /* initialization sequence */
+		lcd_command(0x30);
+		delay_milli(5);
+		lcd_command(0x30);
+		delay_micro(100);
+		lcd_command(0x30);
+
+    lcd_command(0x38); //8-bits,2 display lines, 5x7 font
+
+    lcd_command(0x06); //increments automatically
+
+    lcd_command(0x0F); //Turn on display
+
+    lcd_command(0x01); //clear display
 }

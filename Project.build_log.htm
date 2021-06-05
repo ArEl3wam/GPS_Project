@@ -3,12 +3,8 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-<<<<<<< HEAD
 E:\MyProjects\EmbeddedSystemsGPS\GPS_Project\Project.uvproj
-=======
-A:\Github\GPS_Project\Project.uvproj
->>>>>>> b4a5c8b (Edit in UART5 initialization)
-Project File Date:  06/04/2021
+Project File Date:  06/05/2021
 
 <h2>Output:</h2>
 Rebuild target 'GPS'
@@ -18,22 +14,16 @@ tm4c123gh6pm.h(4210): warning:  #1-D: last line of file ends without a newline
   #endif
 main.c(10): warning:  #1295-D: Deprecated declaration GPS_Coordinates - give arg types
   void GPS_Coordinates();
-main.c(313): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
+main.c(351): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
                                                         temp = atof(latitude);
-main.c(316): warning:  #223-D: function "sprintf" declared implicitly
+main.c(355): warning:  #223-D: function "sprintf" declared implicitly
                                                         sprintf(latitude, "%.8f", temp);
-main.c(334): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
+main.c(373): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
                                                         temp = atof(longitude);
 main.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=13116 RO-data=1108 RW-data=40 ZI-data=648  
+Program Size: Code=7650 RO-data=718 RW-data=44 ZI-data=556  
 ".\Project.axf" - 0 Error(s), 5 Warning(s).
-Load "E:\\MyProjects\\EmbeddedSystemsGPS\\GPS_Project\\Project.axf" 
-Internal DLL Error
-Error: Flash Download failed  -  Target DLL has been cancelled
-Load "E:\\MyProjects\\EmbeddedSystemsGPS\\GPS_Project\\Project.axf" 
-Internal DLL Error
-Error: Flash Download failed  -  Target DLL has been cancelled
 Load "E:\\MyProjects\\EmbeddedSystemsGPS\\GPS_Project\\Project.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
@@ -42,8 +32,3 @@ Verify OK.
 </pre>
 </body>
 </html>
-in.c(336): warning:  #1-D: last line of file ends without a newline
-  }
-main.c: 5 warnings, 10 errors
-".\Project.axf" - 10 Error(s), 5 Warning(s).
-Target not created

@@ -11,6 +11,10 @@ void GPS_Coordinates();
 void UART_init(void);
 void delay_milli(int n);
 void delay_micro(int n);
+void CalculateDistance(double newX,double newY );
+void RED_LED(void);
+void setX(double x);
+void setY(double y);
 
 
 //LCD FUNCTIONS
@@ -36,16 +40,43 @@ int main (void)
 {	
 	LED_init();
 	lcd_init();
+	// Dummy data for Testing Distance Function // 
+	 newX=0.0001;
+	 newY=0.0001;
 	
 	while (1) 
 		{  
-				lcd_command(1); 
-				lcd_command(0x80); 
-				delay_milli(500);
-				lcd_display(123);
-				lcd_data('a');
+				int i;
+				for (i=0; i < 5; i++){
+					
+					CalculateDistance(newX,newY);
+					RED_LED();
+					newX+=0.0001;
+					newY+=0.0001;
+					lcd_command(1); 
+					lcd_command(0x80); 
+					delay_milli(500);
+					lcd_data('D');
+					lcd_data('i');
+					lcd_data('s');
+					lcd_data('t');
+					lcd_data('a');
+					lcd_data('n');
+					lcd_data('c');
+					lcd_data('e');
+					lcd_data(':');
+					lcd_display(distance);
+					delay_milli(500);
+					
+					
+				}
+				//lcd_command(1); 
+				//lcd_command(0x80); 
+				//delay_milli(500);
+				//lcd_display(123);
+				//lcd_data('a');
 				
-				delay_milli(500);
+				//delay_milli(500);
 			
 			
 			

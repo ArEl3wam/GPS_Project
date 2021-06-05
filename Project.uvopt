@@ -197,6 +197,7 @@
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>204</TopLine>
       <CurrentLine>234</CurrentLine>
+
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_TM4C123.s</PathWithFileName>
       <FilenameWithoutPath>startup_TM4C123.s</FilenameWithoutPath>
@@ -213,6 +214,7 @@
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>40</TopLine>
       <CurrentLine>91</CurrentLine>
+
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>

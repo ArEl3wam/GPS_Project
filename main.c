@@ -238,6 +238,20 @@ void turn_LED_100(uint16_t dist){
 
 }
 
+void delay_milli(int n){
+int i,j;
+for(i=0;i<n;i++){
+for(j=0;j<3180;j++)
+{}
+}
+}
+
+void delay_micro(int n){
+int i,j;
+for(i=0;i<n;i++){
+for(j=0;j<3;j++)
+{}
+}
 //LCD functions
 void lcd_command(uint8_t comm){
 	
@@ -256,10 +270,6 @@ void lcd_data(uint8_t data){
 	GPIO_PORTE_DATA_R |= 0x04;  // ENABLE IS SET TO 1
 	delay();
 	GPIO_PORTE_DATA_R &= ~0x04;	// ENABLE IS SET TO 0
-}
-void delay(void){
-	int temp =12000;
-	while(temp--);
 }
 void lcd_display(uint16_t data,uint8_t pos){
 	uint8_t hundreds = data/100;

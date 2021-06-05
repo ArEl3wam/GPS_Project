@@ -7,6 +7,10 @@
 void SSD_init(void);
 void LED_init(void);
 void dist_to_display(uint16_t dist);
+void GPS_Coordinates();
+void UART_init(void);
+void delay_milli(int n);
+void delay_micro(int n);
 
 
 //LCD FUNCTIONS
@@ -24,132 +28,6 @@ uint8_t latitude[20];
 uint8_t longitude[20];
 /////////////Global Variables/////////////
 
-void CalculateDistance(double newX,double newY ){
-	if(oldX == 0.0 || oldY == 0.0){
-				oldX=newX;
-        oldY=newY;
-	}
-	else{
-    double xsquare= (oldX-newX)*(oldX-newX);
-    double ysquare= (oldY-newY)*(oldY-newY);
-    double summing =  xsquare + ysquare;
-
-    distance+= sqrt(summing)* 100000;
-        oldX=newX;
-        oldY=newY;
-		}
-}
-
-
-void UART_init(void){
-SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5
-SYSCTL_RCGCGPIO_R |=0x0010;   // activate port E
- while ((SYSCTL_RCGCUART_R&0x0020)==0){};
- while ((SYSCTL_PRGPIO_R&0x0010)==0){};
-	 
-	 //UART5 initialization
-UART5_CTL_R =0;      //disable UART
-UART5_IBRD_R=104;
-// IBRD=int(1000000/9600)=int(104.16667)	 
-UART5_FBRD_R=11;
-//FBRD=round(0.16667*64)=11;
- UART5_LCRH_R |=	0x0070 ; //8-bit length ,enable FIFO
- UART5_CTL_R |=0x0201;  //enable RXE,URT
-	 
-//portE initailization
-	 GPIO_PORTE_DIR_R &= ~0x10;
-	 GPIO_PORTE_CR_R |= 0x10;        //unlock commit register
-	 GPIO_PORTE_AFSEL_R |= 0x10;    //use PE4 alternating function
-	 GPIO_PORTE_PCTL_R |= 0x10000;  // configure PE4 for UART
-	 GPIO_PORTE_DEN_R |= 0x10;      //set PE4 as digital
-	 GPIO_PORTE_AMSEL_R &= ~0x10;   //turn off analoge function
-	  
-}
-
-
-uint8_t UART5_Receiver(void){
-	  while((UART5_FR_R&0x10)!=0){} //wait when data are available (RXFE is 0)
-    return ((uint8_t)(UART5_DR_R&0xFF)); 
-}
-
-
-void GPS_Coordinates(){
-	uint8_t c;
-	uint8_t i = 0;
-	double temp;
-
-	c = UART5_Receiver();
-
-	if(c == '$')
-	{
-		c = UART5_Receiver();
-		if(c == 'G')
-		{
-			c = UART5_Receiver();
-			if(c == 'P')
-			{
-				c = UART5_Receiver();
-				if(c == 'G')
-				{
-					c = UART5_Receiver();
-					if(c == 'L')
-					{
-						c = UART5_Receiver();
-						if(c == 'L')
-						{
-							c = UART5_Receiver(); /* For comma */
-							c = UART5_Receiver(); /* For 3 */
-							c = UART5_Receiver(); /* For 0 */
-
-							c = UART5_Receiver();
-							while(c != ',')
-							{
-								latitude[i] = c;
-								i++;
-								c = UART5_Receiver();
-							}
-							latitude[i] = '\0';
-
-							temp = atof(latitude);
-							temp /= 60;
-							temp += 30;
-							sprintf(latitude, "%.8f", temp);
-
-							c = UART5_Receiver(); /* for N */
-							c = UART5_Receiver(); /* for , */
-							c = UART5_Receiver(); /* for 3 */
-							c = UART5_Receiver(); /* for 1 */
-
-							/* longitude */
-							i=0;
-							c = UART5_Receiver();
-							while(c != ',')
-							{
-								longitude[i] = c;
-								i++;
-								c = UART5_Receiver();
-							}
-							longitude[i] = '\0';
-
-							temp = atof(longitude);
-							temp /= 60;
-							temp += 31;
-							sprintf(longitude, "%.8f", temp);
-						}
-					}
-				}
-			}
-		}
-
-	}
-}
-
-
-
-
-
-
-
 void SystemInit(void){
 	LED_init();
 	lcd_init();
@@ -158,10 +36,16 @@ int main (void)
 {	
 	while (1) 
 		{  
-			UART_init();
-			GPS_Coordinates();
+				lcd_command(1); 
+				lcd_command(0x80); 
+				delay_milli(500);
+				lcd_display(123);
+				lcd_data('a');
+				
+				delay_milli(500);
 			
-			GPIO_PORTF_DATA_R |= 0x02; // turn on red LED
+			
+			
 		}
 }
 
@@ -225,32 +109,32 @@ void LED_init(void){SYSCTL_RCGCGPIO_R |= 0x20;
 // 7-segment-display functions
 uint8_t decimal_to_BCD(uint8_t num){switch(num){
         case 0:
-            return 0b00111111;
+            return 0x3F;
         case 1:
-            return 0b00000110;
+            return 0x06;
         case 2:
-            return 0b00011011;
+            return 0x1B;
         case 3:
-            return 0b01001111;
+            return 0x4F;
         case 4:
-            return 0b01100110;
+            return 0x66;
         case 5:
-            return 0b01101101;
+            return 0x6D;
         case 6:
-            return 0b01111101;
+            return 0x7D;
         case 7:
-            return 0b00000111;
+            return 0x07;
         case 8:
-            return 0b01111111;
+            return 0x7F;
     }
-    return 0b01101111;
+    return 0x6F;
 	
 }
 
 void dist_to_display(uint16_t dist){
 	
 }
-
+// delay functions // 
 void delay_milli(int n){
 int i,j;
 for(i=0;i<n;i++){
@@ -334,3 +218,135 @@ void lcd_init(void){
 
     lcd_command(0x01); //clear display
 }
+
+// Distance Function // 
+void CalculateDistance(double newX,double newY ){
+	if(oldX == 0.0 || oldY == 0.0){
+				oldX=newX;
+        oldY=newY;
+	}
+	else{
+    double xsquare= (oldX-newX)*(oldX-newX);
+    double ysquare= (oldY-newY)*(oldY-newY);
+    double summing =  xsquare + ysquare;
+
+    distance+= sqrt(summing)* 100000;
+        oldX=newX;
+        oldY=newY;
+		}
+}
+
+// UART initialization //
+void UART_init(void){
+SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5
+SYSCTL_RCGCGPIO_R |=0x0010;   // activate port E
+ while ((SYSCTL_RCGCUART_R&0x0020)==0){};
+ while ((SYSCTL_PRGPIO_R&0x0010)==0){};
+	 
+	 //UART5 initialization
+UART5_CTL_R =0;      //disable UART
+UART5_IBRD_R=104;
+// IBRD=int(1000000/9600)=int(104.16667)	 
+UART5_FBRD_R=11;
+//FBRD=round(0.16667*64)=11;
+ UART5_LCRH_R |=	0x0070 ; //8-bit length ,enable FIFO
+ UART5_CTL_R |=0x0201;  //enable RXE,URT
+	 
+//portE initailization
+	 GPIO_PORTE_DIR_R &= ~0x10;
+	 GPIO_PORTE_CR_R |= 0x10;        //unlock commit register
+	 GPIO_PORTE_AFSEL_R |= 0x10;    //use PE4 alternating function
+	 GPIO_PORTE_PCTL_R |= 0x10000;  // configure PE4 for UART
+	 GPIO_PORTE_DEN_R |= 0x10;      //set PE4 as digital
+	 GPIO_PORTE_AMSEL_R &= ~0x10;   //turn off analoge function
+	  
+}
+
+
+
+// UART initialization //
+uint8_t UART5_Receiver(void){
+	  while((UART5_FR_R&0x10)!=0){} //wait when data are available (RXFE is 0)
+    return ((uint8_t)(UART5_DR_R&0xFF)); 
+}
+
+
+
+// GPS Function //
+void GPS_Coordinates(){
+	uint8_t c;
+	uint8_t i = 0;
+	double temp;
+
+	c = UART5_Receiver();
+
+	if(c == '$')
+	{
+		c = UART5_Receiver();
+		if(c == 'G')
+		{
+			c = UART5_Receiver();
+			if(c == 'P')
+			{
+				c = UART5_Receiver();
+				if(c == 'G')
+				{
+					c = UART5_Receiver();
+					if(c == 'L')
+					{
+						c = UART5_Receiver();
+						if(c == 'L')
+						{
+							c = UART5_Receiver(); /* For comma */
+							c = UART5_Receiver(); /* For 3 */
+							c = UART5_Receiver(); /* For 0 */
+
+							c = UART5_Receiver();
+							while(c != ',')
+							{
+								latitude[i] = c;
+								i++;
+								c = UART5_Receiver();
+							}
+							latitude[i] = '\0';
+
+							temp = atof(latitude);
+							temp /= 60;
+							temp += 30;
+							sprintf(latitude, "%.8f", temp);
+
+							c = UART5_Receiver(); /* for N */
+							c = UART5_Receiver(); /* for , */
+							c = UART5_Receiver(); /* for 3 */
+							c = UART5_Receiver(); /* for 1 */
+
+							/* longitude */
+							i=0;
+							c = UART5_Receiver();
+							while(c != ',')
+							{
+								longitude[i] = c;
+								i++;
+								c = UART5_Receiver();
+							}
+							longitude[i] = '\0';
+
+							temp = atof(longitude);
+							temp /= 60;
+							temp += 31;
+							sprintf(longitude, "%.8f", temp);
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
+
+
+
+
+
+
+

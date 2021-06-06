@@ -11,6 +11,10 @@ void GPS_Coordinates();
 void UART_init(void);
 void delay_milli(int n);
 void delay_micro(int n);
+void CalculateDistance(double newX,double newY );
+void RED_LED(void);
+void setX(double x);
+void setY(double y);
 
 
 //LCD FUNCTIONS
@@ -34,15 +38,45 @@ void SystemInit(void){
 }
 int main (void)
 {	
+	LED_init();
+	lcd_init();
+	// Dummy data for Testing Distance Function // 
+	 newX=0.0001;
+	 newY=0.0001;
+	
 	while (1) 
 		{  
-				lcd_command(1); 
-				lcd_command(0x80); 
-				delay_milli(500);
-				lcd_display(123);
-				lcd_data('a');
+				int i;
+				for (i=0; i < 5; i++){
+					
+					CalculateDistance(newX,newY);
+					RED_LED();
+					newX+=0.0001;
+					newY+=0.0001;
+					lcd_command(1); 
+					lcd_command(0x80); 
+					delay_milli(500);
+					lcd_data('D');
+					lcd_data('i');
+					lcd_data('s');
+					lcd_data('t');
+					lcd_data('a');
+					lcd_data('n');
+					lcd_data('c');
+					lcd_data('e');
+					lcd_data(':');
+					lcd_display(distance);
+					delay_milli(500);
+					
+					
+				}
+				//lcd_command(1); 
+				//lcd_command(0x80); 
+				//delay_milli(500);
+				//lcd_display(123);
+				//lcd_data('a');
 				
-				delay_milli(500);
+				//delay_milli(500);
 			
 			
 			
@@ -91,7 +125,8 @@ void SSD_init(void){
 
 }
 
-void LED_init(void){SYSCTL_RCGCGPIO_R |= 0x20;
+void LED_init(void){
+		SYSCTL_RCGCGPIO_R |= 0x20;
     while((SYSCTL_PRGPIO_R & 0x20) == 0) ;
 
     GPIO_PORTF_LOCK_R = 0x4C4F434B;
@@ -132,6 +167,21 @@ uint8_t decimal_to_BCD(uint8_t num){switch(num){
 }
 
 void dist_to_display(uint16_t dist){
+	
+	
+		uint8_t hundreds = dist/100;
+    uint8_t tens=dist/10 - hundreds*10 ;
+    uint8_t ones=dist-hundreds*100 - tens*10;
+
+    uint8_t h = decimal_to_BCD(hundreds);
+    uint8_t t = decimal_to_BCD(tens);
+    uint8_t o = decimal_to_BCD(ones);
+
+    GPIO_PORTD_DATA_R |= h;
+    GPIO_PORTB_DATA_R |= t;
+
+    GPIO_PORTA_DATA_R |= (o<<2);  // a - f on A2 - A7
+    GPIO_PORTD_DATA_R |=((o&0x40)<<1); //set pin 7
 	
 }
 // delay functions // 
@@ -236,6 +286,27 @@ void CalculateDistance(double newX,double newY ){
 		}
 }
 
+// Red_LED function //
+
+void RED_LED(void){
+
+    if (distance > 100.00){
+    GPIO_PORTF_DATA_R|= 0x02;
+    }
+}
+
+// Setters for Global X-Coordinates //
+
+void setX(double x){
+
+    newX=x;
+}
+void setY(double y){
+
+    newY=y;
+}
+
+
 // UART initialization //
 void UART_init(void){
 SYSCTL_RCGCUART_R |=0x0020;  // enable clock for UART5
@@ -310,6 +381,7 @@ void GPS_Coordinates(){
 
 							temp = atof(latitude);
 							temp /= 60;
+							setX(temp);
 							temp += 30;
 							sprintf(latitude, "%.8f", temp);
 
@@ -331,6 +403,7 @@ void GPS_Coordinates(){
 
 							temp = atof(longitude);
 							temp /= 60;
+							setY(temp);
 							temp += 31;
 							sprintf(longitude, "%.8f", temp);
 						}

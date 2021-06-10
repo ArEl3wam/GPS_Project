@@ -1,5 +1,6 @@
 #include "tm4c123gh6pm.h"
 #include "stdint.h"
+#include "stdio.h"
 #include <stdlib.h>
 #include <math.h>
 
@@ -28,16 +29,15 @@ void lcd_init(void);
 double distance=0;
 double oldX=0, oldY=0;
 double newX=0, newY=0;
-uint8_t latitude[20];
-uint8_t longitude[20];
+char latitude[20];
+char longitude[20];
 /////////////Global Variables/////////////
 
 void SystemInit(void){
 	LED_init();
 	lcd_init();
 }
-int main (void)
-{	
+int main (void){	
 	LED_init();
 	lcd_init();
 	// Dummy data for Testing Distance Function // 
@@ -168,22 +168,6 @@ uint8_t decimal_to_BCD(uint8_t num){
 }
 
 void dist_to_display(uint16_t dist){
-uint8_t hundreds = dist/100;
-    uint8_t tens=dist/10 - hundreds10 ;
-    uint8_t ones=dist-hundreds100 - tens*10;
-
-    uint8_t h = decimal_to_BCD(hundreds);
-    uint8_t t = decimal_to_BCD(tens);
-    uint8_t o = decimal_to_BCD(ones);
-
-    GPIO_PORTD_DATA_R |= h;
-    GPIO_PORTB_DATA_R |= t;
-
-    GPIO_PORTA_DATA_R |= (o<<2);  // a - f on A2 - A7
-    GPIO_PORTD_DATA_R |=((o&0x40)<<1); //set pin 7
-
-	
-	
 		uint8_t hundreds = dist/100;
     uint8_t tens=dist/10 - hundreds*10 ;
     uint8_t ones=dist-hundreds*100 - tens*10;

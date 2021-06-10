@@ -202,7 +202,8 @@ void LED_init(void){SYSCTL_RCGCGPIO_R |= 0x20;
 }
 
 // 7-segment-display functions
-uint8_t decimal_to_BCD(uint8_t num){switch(num){
+uint8_t decimal_to_BCD(uint8_t num){
+	switch(num){
         case 0:
             return 0b00111111;
         case 1:
@@ -271,6 +272,7 @@ void lcd_display(uint16_t data){
 	uint8_t hundreds = data/100;
 	uint8_t tens=data/10 - hundreds*10 ;
 	uint8_t ones=data-hundreds*100 - tens*10;
+	
 	lcd_data(hundreds +'0');
 	lcd_data(tens +'0');
 	lcd_data(ones +'0');

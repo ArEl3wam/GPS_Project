@@ -451,10 +451,20 @@ void lcd_init(void){
 
 // Distance Function // 
 double to_radians(double degree){
-
+	return degree*(M_PI/180.0);
 }
 void update_distance(void){
+	double latdist = to_radians(newlat-startlat);
+	double longdist = to_radians(newlong-startlong);
+	double a = sin(latdist/2)*sin(latdist/2) + cos(to_radians(startlat))*cos(to_radians(newlat))*sin(longdist/2)*sin(longdist/2);
+	double c = 2*atan2(sqrt(a),sqrt(1-a));
 	
+	double temp = (AVERAGE_RADIUS_OF_EARTH_KM * c);
+	if(temp<=18)
+		return;
+	distance+=temp;
+	startlong = newlong;
+	startlat = newlat;
 }
 
 

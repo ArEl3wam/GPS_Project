@@ -1,17 +1,9 @@
 Dependencies for Project 'Project', Target 'GPS': (DO NOT MODIFY !)
-<<<<<<< HEAD
-F (.\startup_TM4C123.s)(0x532C4792)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123--list .\startup_tm4c123.lst --xref -o .\startup_tm4c123.o --depend .\startup_tm4c123.d)
-F (.\main.c)(0x60BB2839)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123-DTM4C123GH6PM-o .\main.o --omf_browse .\main.crf --depend .\main.d)
-I (tm4c123gh6pm.h)(0x60B35CC6)
+F (.\startup_TM4C123.s)(0x532C4792)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123--list .\startup_tm4c123.lst --xref -o .\startup_tm4c123.o --depend .\startup_tm4c123.d)
+F (.\main.c)(0x60C651B9)(-c --cpu Cortex-M4 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123-DTM4C123GH6PM-o .\main.o --omf_browse .\main.crf --depend .\main.d)
+I (tm4c123gh6pm.h)(0x60C52D4C)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
-I (C:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C819B4)
-F (.\tm4c123gh6pm.h)(0x60B35CC6)()
-=======
-F (.\startup_TM4C123.s)(0x60BB2DE8)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123--list .\startup_tm4c123.lst --xref -o .\startup_tm4c123.o --depend .\startup_tm4c123.d)
-F (.\main.c)(0x60BBFFB4)(-c --cpu Cortex-M4 -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\TI\TM4C123-DTM4C123GH6PM-o .\main.o --omf_browse .\main.crf --depend .\main.d)
-I (tm4c123gh6pm.h)(0x60BB2DE8)
-I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
+I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C819B4)
 I (C:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C819B4)
 I (C:\Keil\ARM\ARMCC\include\math.h)(0x51C819B4)
-F (.\tm4c123gh6pm.h)(0x60BB2DE8)()
->>>>>>> a3d908104f6aeac7ac06bc3ad429a2648be3e906
+F (.\tm4c123gh6pm.h)(0x60C52D4C)()
